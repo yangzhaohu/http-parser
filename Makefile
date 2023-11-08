@@ -115,6 +115,9 @@ library: libhttp_parser.o
 package: http_parser.o
 	$(AR) rcs libhttp_parser.a http_parser.o
 
+libpackage: libhttp_parser.o
+	$(AR) rcs libhttp_parser.a libhttp_parser.o
+
 url_parser: http_parser.o contrib/url_parser.c
 	$(CC) $(CPPFLAGS_FAST) $(CFLAGS_FAST) $^ -o $@
 

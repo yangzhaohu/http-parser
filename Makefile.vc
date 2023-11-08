@@ -1,0 +1,36 @@
+CC   := cl
+CXX  := cl
+LINKDLL := cl
+LINKLIB := lib
+
+TARGET_OUT := lib
+
+SYMEXP := symexp.def
+
+FLAGS :=
+
+CFLAGS += $(FLAGS)
+CXXFLAGS += $(FLAGS)
+
+SRCS := http_parser.c
+
+OBJS := $(SRCS:%.c=%.obj)
+OBJS := $(OBJS:%.cpp=%.obj)
+
+%.obj : %.c
+	$(CC) /c /FD /TC $< /nologo $(CFLAGS) /Fo: $@
+
+%.obj : %.cpp
+	$(CXX) /c /TP $< /nologo $(CXXFLAGS) /Fo: $@
+
+.PHONY: build
+
+build: $(OBJS)
+	@set -e; mkdir -p $(TARGET_OUT)/static $(TARGET_OUT)/dynamic;
+	$(LINKLIB) $(OBJS) /nologo /out:$(TARGET_OUT)/static/libhttp_parser.lib
+	$(LINKDLL) $(OBJS) /nologo /DEF: $(SYMEXP) /link /dll /out:$(TARGET_OUT)/dynamic/libhttp_parser.dll
+	
+all: clean build
+
+clean:
+	rm -f $(OBJS) libhttp_parser.lib
